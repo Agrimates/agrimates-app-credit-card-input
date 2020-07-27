@@ -34,12 +34,13 @@ const s = StyleSheet.create({
 });
 
 const CVC_INPUT_WIDTH = 70;
-const EXPIRY_INPUT_WIDTH = CVC_INPUT_WIDTH;
+const CPF_INPUT_WIDTH = 190;
+const EXPIRY_INPUT_WIDTH = 80;
 const CARD_NUMBER_INPUT_WIDTH_OFFSET = 40;
 const CARD_NUMBER_INPUT_WIDTH = Dimensions.get("window").width - EXPIRY_INPUT_WIDTH - CARD_NUMBER_INPUT_WIDTH_OFFSET;
 const NAME_INPUT_WIDTH = CARD_NUMBER_INPUT_WIDTH;
 const PREVIOUS_FIELD_OFFSET = 40;
-const POSTAL_CODE_INPUT_WIDTH = 120;
+//const POSTAL_CODE_INPUT_WIDTH = 120;
 
 /* eslint react/prop-types: 0 */ // https://github.com/yannickcr/eslint-plugin-react/issues/106
 export default class CreditCardInput extends Component {
@@ -70,18 +71,20 @@ export default class CreditCardInput extends Component {
   static defaultProps = {
     cardViewSize: {},
     labels: {
-      name: "CARDHOLDER'S NAME",
-      number: "CARD NUMBER",
-      expiry: "EXPIRY",
-      cvc: "CVC/CCV",
-      postalCode: "POSTAL CODE",
+      name: "NOME NO CARTÃO",
+      number: "NÚMERO DO CARTÃO",
+      expiry: "VALIDADE",
+      cvc: "CVC",
+      cpf: "CPF (MESMO DO CARTÃO)",
+      //postalCode: "CEP",
     },
     placeholders: {
-      name: "Full Name",
-      number: "1234 5678 1234 5678",
-      expiry: "MM/YY",
+      name: "Nome",
+      number: "1234 5678 9012 3456",
+      expiry: "MM/AA",
       cvc: "CVC",
-      postalCode: "34567",
+      cpf: "___.___.___-__",
+      //postalCode: "11000-000",
     },
     inputContainerStyle: {
       borderBottomWidth: 1,
@@ -90,7 +93,7 @@ export default class CreditCardInput extends Component {
     validColor: "",
     invalidColor: "red",
     placeholderColor: "gray",
-    allowScroll: false,
+    allowScroll: true,
     additionalInputsProps: {},
   };
 
@@ -142,8 +145,8 @@ export default class CreditCardInput extends Component {
   render() {
     const {
       cardImageFront, cardImageBack, inputContainerStyle,
-      values: { number, expiry, cvc, name, type }, focused,
-      allowScroll, requiresName, requiresCVC, requiresPostalCode,
+      values: { number, expiry, cvc, cpf, name, type }, focused,
+      allowScroll,
       cardScale, cardFontFamily, cardBrandIcons,
     } = this.props;
 
@@ -156,10 +159,12 @@ export default class CreditCardInput extends Component {
           imageFront={cardImageFront}
           imageBack={cardImageBack}
           customIcons={cardBrandIcons}
-          name={requiresName ? name : " "}
+          name={name}
           number={number}
           expiry={expiry}
-          cvc={cvc} />
+          cvc={cvc}
+          cpf={cpf}
+          />
         <ScrollView ref="Form"
           horizontal
           keyboardShouldPersistTaps="always"
@@ -172,17 +177,14 @@ export default class CreditCardInput extends Component {
           <CCInput {...this._inputProps("expiry")}
             keyboardType="numeric"
             containerStyle={[s.inputContainer, inputContainerStyle, { width: EXPIRY_INPUT_WIDTH }]} />
-          { requiresCVC &&
-            <CCInput {...this._inputProps("cvc")}
-              keyboardType="numeric"
-              containerStyle={[s.inputContainer, inputContainerStyle, { width: CVC_INPUT_WIDTH }]} /> }
-          { requiresName &&
-            <CCInput {...this._inputProps("name")}
-              containerStyle={[s.inputContainer, inputContainerStyle, { width: NAME_INPUT_WIDTH }]} /> }
-          { requiresPostalCode &&
-            <CCInput {...this._inputProps("postalCode")}
-              keyboardType="numeric"
-              containerStyle={[s.inputContainer, inputContainerStyle, { width: POSTAL_CODE_INPUT_WIDTH }]} /> }
+          <CCInput {...this._inputProps("cvc")}
+            keyboardType="numeric"
+            containerStyle={[s.inputContainer, inputContainerStyle, { width: CVC_INPUT_WIDTH }]} />
+          <CCInput {...this._inputProps("cpf")}
+            keyboardType="numeric"
+            containerStyle={[s.inputContainer, inputContainerStyle, { width: CPF_INPUT_WIDTH }]} />
+          <CCInput {...this._inputProps("name")}
+            containerStyle={[s.inputContainer, inputContainerStyle, { width: NAME_INPUT_WIDTH }]} />
         </ScrollView>
       </View>
     );

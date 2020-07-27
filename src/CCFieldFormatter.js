@@ -27,8 +27,9 @@ export default class CCFieldFormatter {
       number: this._formatNumber(values.number, card),
       expiry: this._formatExpiry(values.expiry),
       cvc: this._formatCVC(values.cvc, card),
+      cpf: this._formatCPF(values.cpf),
       name: removeLeadingSpaces(values.name),
-      postalCode: removeNonNumber(values.postalCode),
+      //postalCode: removeNonNumber(values.postalCode),
     }, this._displayedFields);
   };
 
@@ -50,5 +51,11 @@ export default class CCFieldFormatter {
   _formatCVC = (cvc, card) => {
     const maxCVCLength = card.code.size;
     return limitLength(removeNonNumber(cvc), maxCVCLength);
+  };
+
+  _formatCPF = (cpf) => {
+    const sanitized = limitLength(removeNonNumber(cpf), 11);
+    if (sanitized.length == 11) { return `${sanitized.substr(0, 3)}\.${sanitized.substr(3, 3)}\.${sanitized.substr(6, 3)}\-${sanitized.substr(9, 2)}`; }
+    return sanitized;
   };
 }

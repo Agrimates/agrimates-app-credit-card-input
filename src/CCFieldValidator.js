@@ -3,6 +3,8 @@ import pick from "lodash.pick";
 import values from "lodash.values";
 import every from "lodash.every";
 
+import { vCPF } from "./Utilities";
+
 const toStatus = validation => {
   return validation.isValid ? "valid" :
          validation.isPotentiallyValid ? "incomplete" :
@@ -11,9 +13,10 @@ const toStatus = validation => {
 
 const FALLBACK_CARD = { gaps: [4, 8, 12], lengths: [16], code: { size: 3 } };
 export default class CCFieldValidator {
+
   constructor(displayedFields, validatePostalCode) {
     this._displayedFields = displayedFields;
-    this._validatePostalCode = validatePostalCode;
+    //this._validatePostalCode = validatePostalCode;
   }
 
   validateValues = (formValues) => {
@@ -21,13 +24,15 @@ export default class CCFieldValidator {
     const expiryValidation = valid.expirationDate(formValues.expiry);
     const maxCVCLength = (numberValidation.card || FALLBACK_CARD).code.size;
     const cvcValidation = valid.cvv(formValues.cvc, maxCVCLength);
+    const cpfValidation = vCPF(formValues.cpf);
 
     const validationStatuses = pick({
       number: toStatus(numberValidation),
       expiry: toStatus(expiryValidation),
       cvc: toStatus(cvcValidation),
+      cpf: toStatus(cpfValidation),
       name: !!formValues.name ? "valid" : "incomplete",
-      postalCode: this._validatePostalCode(formValues.postalCode),
+      //postalCode: this._validatePostalCode(formValues.postalCode),
     }, this._displayedFields);
 
     return {
